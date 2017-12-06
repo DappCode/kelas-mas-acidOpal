@@ -18,7 +18,7 @@
 
 <!-- Main content -->
 <section class="content">
-  <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#modal-default">
+  <button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#modal-default" onclick="return send_data_add();">
     Add User
   </button>
   <div class="row">
@@ -43,7 +43,7 @@
             </thead>
             <tbody>
               <?php $no=1; ?> <?php foreach ($data_user as $user) { ?>
-              <tr>
+              <tr id="data_<?= $user->id ?>">
                 <td>
                   <?php echo $no++; ?>
                 </td>
@@ -51,8 +51,8 @@
                 <td><?= $user->password ?></td>
                 <td><?= $user->type ?></td>
                 <td>
-                  <button type="button" class="btn btn-warning"> Edit </button>
-                  <button type="button" class="btn btn-danger"> Delete </button>
+                  <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modal-default" onclick="return send_data_edit('<?= $user->id ?>');"> Edit </button>
+                  <button type="button" class="btn btn-danger" data-togle="modal" data-target="#modal-delete" onclick="return delete_data_user();"> Delete </button>
                 </td>
               </tr>
               <?php } ?>
@@ -67,6 +67,8 @@
   <!-- /.row -->
 </section>
 <!-- /.content -->
+
+<!-- Modal Add User -->
 <div class="modal fade" id="modal-default">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -78,6 +80,9 @@
           <h4 class="modal-title"> Add User </h4>
         </div>
         <div class="modal-body">
+          <div class="input-group-id">
+            <input type="hidden" name="id" class="form-control id">  <!-- Untuk memnaggil id nya -->
+          </div>
           <div class="input-group">
             <span class="input-group-addon">
               <i class="fa fa-user"></i>
@@ -102,7 +107,7 @@
 
         <div class="modal-footer">
           <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" onclick="return addUser();">Add User</button>
+          <button type="button" class="btn-action btn btn-primary" onclick="return addUser();">Add User</button>
         </div>
       </form>
     </div>
@@ -110,10 +115,19 @@
   </div>
   <!-- /.modal-dialog -->
 </div>
-<!-- /.modal -->
+<!-- /.modal add user-->
 
 <script>
+  function send_data_add() {
+    $('.modal-title').text('Add User');
+    $('.input-group-id').remove();
+    $('.btn-action').attr('onclick',"return addUser();");
+    $('.btn-action').text('Add User');
+    $('.btn-action').attr('class',"btn-action btn btn-primary");
+  }
+
   function addUser() {
+
     $.ajax({
       method: "POST",
       dataType: "json",
@@ -128,4 +142,39 @@
       }
     });
   }
+
+  function send_data_edit(id) {
+    $('.modal-title').text('Edit User' + id);
+    $('.id').remove();
+    $('.input-group-id').append('<input type="hidden" name="id" class="form-control id">');
+    $('.btn-action').attr('onclick',"return editUser();");
+    $('.btn-action').attr('class',"btn-action btn btn-warning");
+    $('.btn-action').text('Save Changes');
+
+    var username = $('#data_'+ id + '> td').eq(1).html();
+    var password = $('#data_'+ id + '> td').eq(2).html();
+    var type = $('#data_'+ id + '> td').eq(3).html();
+
+    $('input[name=id]').val(id);
+    $('input[name=username').val(username);
+    $('input[name=password').val(password);
+    $('input[name=type').val(type);
+  }
+
+  function editUser() {
+    $.ajax({
+      method: "POST",
+      dataType: "json",
+      url: '<?= $this->url->get('users/editUser') ?>', // url actionnya
+      data: $('form.addUser').serialize(),
+      succes: function (res) {
+        new PNotify({
+          title: res.title,
+          text: res.text,
+          type: res.type,
+        });
+      }
+    });
+  }
+  
 </script>
