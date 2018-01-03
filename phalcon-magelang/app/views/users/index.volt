@@ -41,7 +41,7 @@
                 <th>Action</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="listUser">
               <?php $no=1; ?> {% for user in data_user %}
               <tr id="data_{{user.id}}">
                 <td>
@@ -51,8 +51,10 @@
                 <td>{{user.password}}</td>
                 <td>{{user.type}}</td>
                 <td>
-                  <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modal-default" onclick="return send_data_edit('{{user.id}}');"> Edit </button>
-                  <button type="button" class="btn btn-danger" data-togle="modal" data-target="#modal-delete" onclick="return delete_data_user();"> Delete </button>
+                  <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modal-default" onclick="return send_data_edit('{{user.id}}');">
+                    Edit </button>
+                  <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal-delete" onclick="return send_data_delete('{{user.id}}');">
+                    Delete </button>
                 </td>
               </tr>
               {% endfor %}
@@ -81,7 +83,8 @@
         </div>
         <div class="modal-body">
           <div class="input-group-id">
-            <input type="hidden" name="id" class="form-control id">  <!-- Untuk memnaggil id nya -->
+            <input type="hidden" name="id" class="form-control id">
+            <!-- Untuk memnaggil id nya -->
           </div>
           <div class="input-group">
             <span class="input-group-addon">
@@ -106,7 +109,7 @@
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+          <button type="button" class="close close-modal btn btn-default pull-left" data-dismiss="modal">Close</button>
           <button type="button" class="btn-action btn btn-primary" onclick="return addUser();">Add User</button>
         </div>
       </form>
@@ -117,13 +120,46 @@
 </div>
 <!-- /.modal add user-->
 
+
+<div class="modal modal-danger fade" id="modal-delete">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form class="deleteUser" action="users/deleteUser" method="POST">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">Delete User</h4>
+        </div>
+        
+        <div class="modal-body">
+        <div class="input-group-id">
+          <input type="hidden" name="id" class="form-control id">
+          <!-- Untuk memnaggil id nya -->
+        </div>
+          <p>Are You Sure &hellip;</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="close-modal btn btn-outline pull-left" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-outline" onclick="return deleteUser();">Delete User</button>
+        </div>
+      </form>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+
+
 <script>
   function send_data_add() {
     $('.modal-title').text('Add User');
     $('.input-group-id').remove();
-    $('.btn-action').attr('onclick',"return addUser();");
+    $('.btn-action').attr('onclick', "return addUser();");
     $('.btn-action').text('Add User');
-    $('.btn-action').attr('class',"btn-action btn btn-primary");
+    $('.btn-action').attr('class', "btn-action btn btn-primary");
   }
 
   function addUser() {
@@ -133,27 +169,29 @@
       dataType: "json",
       url: '{{url("users/addUser")}}', // url actionnya
       data: $('form.addUser').serialize(),
-      succes: function (res) {
+      success: function (res) {
         new PNotify({
           title: res.title,
           text: res.text,
           type: res.type,
+          addclass: "stack-bottomright",
         });
+        $('.close-modal').click();
       }
     });
   }
 
   function send_data_edit(id) {
-    $('.modal-title').text('Edit User' + id);
+    $('.modal-title').text('Edit User ' + id);
     $('.id').remove();
     $('.input-group-id').append('<input type="hidden" name="id" class="form-control id">');
-    $('.btn-action').attr('onclick',"return editUser();");
-    $('.btn-action').attr('class',"btn-action btn btn-warning");
+    $('.btn-action').attr('onclick', "return editUser();");
+    $('.btn-action').attr('class', "btn-action btn btn-warning");
     $('.btn-action').text('Save Changes');
 
-    var username = $('#data_'+ id + '> td').eq(1).html();
-    var password = $('#data_'+ id + '> td').eq(2).html();
-    var type = $('#data_'+ id + '> td').eq(3).html();
+    var username = $('#data_' + id + '> td').eq(1).html();
+    var password = $('#data_' + id + '> td').eq(2).html();
+    var type = $('#data_' + id + '> td').eq(3).html();
 
     $('input[name=id]').val(id);
     $('input[name=username').val(username);
@@ -167,14 +205,55 @@
       dataType: "json",
       url: '{{url("users/editUser")}}', // url actionnya
       data: $('form.addUser').serialize(),
-      succes: function (res) {
+      success: function (res) {
         new PNotify({
           title: res.title,
           text: res.text,
           type: res.type,
+          addclass: "stack-bottomright",
         });
+        $('.close-modal').click();
       }
     });
   }
-  
+
+  function send_data_delete(id) {
+    $('input[name=id').val(id);
+    $('.modal-title').text('Delete User ' + id);
+
+    $('.btn-action').attr('onclick', "return deleteUser();");
+    $('.btn-action').attr('class', "btn-action btn btn-outline");
+    $('.btn-action').text('Delete User');
+  }
+
+
+  function deleteUser() {
+    $.ajax({
+      method: "POST",
+      dataType: "json",
+      url: '{{url("users/deleteUser")}}', // url actionnya
+      data: $('form.deleteUser').serialize(),
+      success: function (res) {
+        new PNotify({
+          title: res.title,
+          text: res.text,
+          type: res.type,
+          addclass: "stack-bottomright",
+        });
+        $('.close-modal').click();
+      }
+    });
+  }
+
+  function listUser() {
+    $.ajax({
+      method:"GET",
+      url: "{{ url('users/listUser')}}",
+      dataType: "html",
+      success: function(res) {
+        $('#listUser').html(res);
+      }
+    });
+  }
+
 </script>

@@ -81,5 +81,40 @@ class UsersController extends \Phalcon\Mvc\Controller
         }
     }
 
+    public function deleteUserAction()
+    {
+        if ($this->request->isPost()) {
+            $id = $this->request->getPost('id');
+
+            $user = Users::findFirst("id='$id'");
+ 
+            if ($user->delete()) {
+                $notif['title']="Success";
+                $notif['text']="Data Telah Berhasil di hapus!";
+                $notif['type']="Success";
+            }else {
+                $pesan_error = $user->getMessages();
+                $data_pesan_error ='';
+                foreach ( $pesan_error as $pesanError) {
+                    $data_pesan_error="$pesanError";
+                }
+                $notif['title']="Error";
+                $notif['text']="Data Tidak Berhasil di hapus!";
+                $notif['type']="Error";
+            }
+            echo json_encode($notif);
+            die();
+        }
+
+
+    }
+
+    public function listUserAction()
+    {
+        $data_user = Users::find();
+        $this->view->data_user = $data_user;
+        $this->view->picl()
+    }
+
 }
 
