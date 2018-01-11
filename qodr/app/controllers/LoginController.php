@@ -31,7 +31,7 @@ class LoginController extends \Phalcon\Mvc\Controller
         // CEK USER
         if($user){
             if($this->security->checkHash(trim($password), trim($user->password))) {
-                // CEK PASSWORd
+                // CEK PASSWORD
                 $this->_registerSession($user);
                 return $this->response->redirect('user');
             } else {
