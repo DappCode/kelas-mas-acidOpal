@@ -1,3 +1,4 @@
+
 <header class="main-header">
   <!-- Logo -->
   <a href="../../index2.html" class="logo">
@@ -232,17 +233,25 @@
         <li class="dropdown user user-menu">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             <img src="../../dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
-            <span class="hidden-xs">Alexander Pierce</span>
+            <?php 
+              if($this->session->has("auth")){
+                $auth = $this->session->get("auth");
+                $username = $auth['username'];
+                echo '<span class="hidden-xs">'.$username.'</span>';
+              
+            ?>
+            
+            
           </a>
           <ul class="dropdown-menu">
             <!-- User image -->
             <li class="user-header">
               <img src="../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+            <?php  
+                echo  '<p>'.$username.'- Web Developer<small>Member since Nov. 2012</small></p>';
+              }
 
-              <p>
-                Alexander Pierce - Web Developer
-                <small>Member since Nov. 2012</small>
-              </p>
+              ?>
             </li>
             <!-- Menu Body -->
             <li class="user-body">

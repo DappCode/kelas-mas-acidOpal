@@ -86,13 +86,14 @@ class Users extends \Phalcon\Mvc\Model
             3 => 'type',
         );
 
-        $sql = "SELECT * FROM User";
+        $sql = "SELECT * FROM Users";
         $query = $this->modelsManager->executeQuery($sql);
-        $total = count($query);
+        $totalData = count($query);
+        $totalFiltered = $totalData;
 
         if (!empty($requestSearch)) {
             // function mencari data
-            $sql = "SELECT * FROM User WHERE username LIKE '%".$requestSearch."%'";
+            $sql = "SELECT * FROM Users WHERE username LIKE '%".$requestSearch."%'";
             $sql.= "OR cabang_id LIKE '%".$requestSearch."%'";
             $sql.= "OR type LIKE '%".$requestSearch."%'";
             $query = $this->modelsManager->executeQuery($sql);
@@ -101,7 +102,7 @@ class Users extends \Phalcon\Mvc\Model
             $sql.=" ORDER BY ". $columns[$requestData['order'][0]['column']]."   ".$requestData['order'][0]['dir']."   LIMIT ".$requestData['start']." ,".$requestData['length']."   "; 
             $query = $this->modelsManager->executeQuery($sql);
         } else {
-            $sql = "SELECT * FROM User";
+            $sql = "SELECT * FROM Users";
             $query = $this->modelsManager->executeQuery($sql);
         }
 

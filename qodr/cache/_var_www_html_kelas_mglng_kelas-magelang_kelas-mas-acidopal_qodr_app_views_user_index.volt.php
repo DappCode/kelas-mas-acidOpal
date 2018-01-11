@@ -1,3 +1,4 @@
+
 <!-- Content Header (Page header) -->
 <section class="content-header">
   <h1>
@@ -183,14 +184,24 @@
     $('.btn-action').attr('class', "btn-action btn btn-warning");
     $('.btn-action').text('Save Changes');
 
-    var username = $('#data_' + id + '> td').eq(1).html();
-    var password = $('#data_' + id + '> td').eq(2).html();
-    var type = $('#data_' + id + '> td').eq(3).html();
+    // var username = $('#data_' + id + '> td').eq(1).html();
+    // var password = $('#data_' + id + '> td').eq(2).html();
+    // var type = $('#data_' + id + '> td').eq(3).html();
 
-    $('input[name=id]').val(id);
-    $('input[name=username').val(username);
-    $('input[name=password').val(password);
-    $('input[name=type').val(type);
+    $.ajax({
+      method: "POST",
+      dataType: "json",
+      url: "<?= $this->url->get('user/getData') ?>/"+id,
+      data: $('form.addUser').serialize(),
+      success: function(res){
+        $('input[name=cabang_id]').val(res.cabang_id);
+        $('input[name=id]').val(res.id);
+        $('input[name=username').val(res.username);
+        $('input[name=password').val(res.password);
+        $('input[name=type').val(res.type);
+
+      }
+    });
   }
 
   function editUser() {
@@ -253,7 +264,7 @@
   $(document).ready(function(){
     var dataTable = $('#data_user').DataTable({
       "processing": true,
-      "serverside": true,
+      "serverSide": true,
       "ajax": {
         url: "user/getAjax",
         type: "post",
