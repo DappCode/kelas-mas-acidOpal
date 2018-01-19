@@ -1,5 +1,5 @@
 <!-- jQuery 3 -->
-
+{{ javascript_include("assets/bower_components/jquery/dist/jquery.min.js")}}
 <!-- Bootstrap 3.3.7 -->
 {{ javascript_include("assets/bower_components/bootstrap/dist/js/bootstrap.min.js")}}
 

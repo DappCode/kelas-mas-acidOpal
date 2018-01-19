@@ -6,10 +6,10 @@
                 <a href="#tab_1" data-toggle="tab" aria-expanded="false">Pemasukan</a>
             </li>
             <li class="active">
-                <a href="#tab_2" data-toggle="tab" aria-expanded="true">Pengeluaran</a>
+                <a href="#tab_2" data-toggle="tab">Pengeluaran</a>
             </li>
             <li>
-                <a href="#tab_3" data-toggle="tab">RAB</a>
+                <a href="#tab_3" data-toggle="tab" aria-expanded="true">RAB</a>
             </li>
             <li>
                 <a href="#tab_3" data-toggle="tab">Perkiraan Pemasukkan</a>
@@ -66,6 +66,7 @@
                                                 <th>Satuan Barang ID</th>
                                                 <th>Keterangan</th>
                                                 <th>Cabang ID</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody id="listUser">
@@ -89,19 +90,22 @@
     <!-- nav-tabs-custom -->
 </div>
 
+
+
+
+
 <script>
 
- 
-
-  $(document).ready(function(){
-    var dataTable = $('#data_user').DataTable({
-      "processing": true,
-      "serverSide": true,
-      "ajax": {
-        url: "rekapharian/getAjax",
-        type: "post",
-      }  
+    $(document).ready(function () {
+        var dataTable = $('#data_user').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                url: "rekapharian/getAjax",
+                type: "post",
+            }
+        });
     });
-  });
+
 
 </script>
